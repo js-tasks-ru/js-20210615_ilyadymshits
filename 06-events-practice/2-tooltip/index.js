@@ -1,12 +1,12 @@
 class Tooltip {
   static activated = null;
-  root = document.querySelector('body');
 
   constructor() {
     if (Tooltip.activated) {
       return Tooltip.activated;
     }
     Tooltip.activated = this;
+    this.root = document.body;
     this.render();
   }
 
