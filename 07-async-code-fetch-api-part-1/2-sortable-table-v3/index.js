@@ -219,7 +219,6 @@ export default class SortableTable {
   }
 
   removeEventListeners () {
-    this.subElements.header.removeEventListener('pointerdown', this.sortOnClick);
     window.removeEventListener('scroll', this.addRowsToTable);
   }
 
@@ -230,6 +229,7 @@ export default class SortableTable {
   }
 
   destroy () {
+    this.removeEventListeners();
     this.remove();
     this.offset = 0;
     this.headerConfig = [];
