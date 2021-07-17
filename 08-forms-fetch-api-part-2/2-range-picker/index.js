@@ -29,22 +29,20 @@ export default class RangePicker {
 
   formatDate(date) {
     const year = date.getFullYear();
-    const month = date.getMonth();
-    const day = date.getDate();
+    const month = (date.getMonth() + 1) < 10 ? `0${date.getMonth() + 1}` : date.getMonth() + 1;
+    const day = date.getDate() < 10 ? `0${date.getDate()}` : date.getDate();
     return `${day}.${month}.${year}`;
   }
 
   get template() {
     return `
-      <div class="rangepicker">
+      <div class="rangepicker ">
 
         <div class="rangepicker__input" data-element="input">
           <span data-element="from" data-timestamp ="${this.from}">${this.formatDate(this.from)}</span> -
           <span data-element="to" data-timestamp = "${this.to}">${this.formatDate(this.to)}</span>
         </div>
-         <div class="rangepicker__selector" data-element="selector">
-            ${this.getMonths()}
-        </div>
+         <div class="rangepicker__selector" data-element="selector"></div>
       </div>
     `;
   }
@@ -78,7 +76,7 @@ export default class RangePicker {
 
     while (date.getMonth() === month) {
       days.push(date);
-      date = new Date(year, month, ++day);
+      date = new Date(year, rawMonth, ++day);
     }
 
     const getWeekDays = () => {
@@ -123,7 +121,7 @@ export default class RangePicker {
     return `
         <div class="rangepicker__calendar">
           <div class="rangepicker__month-indicator">
-            <time datetime="${firstMonthDay.getTime()}">${firstMonthDay.toLocaleDateString(this.locale, {month: 'long'})} - ${firstMonthDay.getFullYear()}</time>
+            <time datetime="${firstMonthDay.getTime()}">${firstMonthDay.toLocaleDateString(this.locale, {month: 'long'})}</time>
           </div>
 
           <div class="rangepicker__day-of-week">
@@ -197,7 +195,8 @@ export default class RangePicker {
   }
 
   toggleCalendar = () => {
-    this.subElements.rangepicker.classList.toggle(this.classes.openCalendar);
+    this.element.classList.toggle(this.classes.openCalendar);
+    this.subElements.selector.innerHTML = this.getMonths();
   }
 
   hideCalendar = e => {
@@ -220,9 +219,9 @@ export default class RangePicker {
   }
 
   initEventListeners() {
-    this.subElements.input.addEventListener('pointerdown', this.toggleCalendar);
-    this.subElements.selector.addEventListener('pointerdown', this.selectDate);
-    document.body.addEventListener('pointerdown', this.hideCalendar, {capture: true});
+    this.subElements.input.addEventListener('click', this.toggleCalendar);
+    this.subElements.selector.addEventListener('click', this.selectDate);
+    document.body.addEventListener('click', this.hideCalendar, {capture: true});
   }
 
   dispatchEvents = () => {
@@ -245,6 +244,6 @@ export default class RangePicker {
 
   destroy () {
     this.remove();
-    document.body.removeEventListener('pointerdown', this.hideCalendar, {capture: true});
+    document.body.removeEventListener('click', this.hideCalendar, {capture: true});
   }
 }
